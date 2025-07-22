@@ -17,6 +17,7 @@ Esta configuración te permite ejecutar una IA local potente para desarrollo usa
 - Al menos 8GB de RAM (16GB recomendado)
 - 50GB de espacio libre en disco
 - (Opcional) GPU NVIDIA con drivers instalados para mejor rendimiento
+- **Para GPU NVIDIA**: NVIDIA Container Toolkit instalado
 
 ## 🛠️ Instalación Rápida
 
@@ -138,6 +139,30 @@ docker exec ollama-dev-ai-cpu ollama pull nuevo-modelo:tag
 ```
 
 ## 🐛 Solución de Problemas
+
+### Configuración de GPU NVIDIA en Fedora
+
+Si tienes problemas con GPU en Fedora:
+
+```bash
+# Instalar NVIDIA Container Toolkit
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+
+# Remover conflictos (si existen)
+sudo dnf remove golang-github-nvidia-container-toolkit -y
+
+# Instalar el toolkit
+sudo dnf install -y nvidia-container-toolkit
+
+# Configurar Docker
+sudo nvidia-ctk runtime configure --runtime=docker
+
+# Reiniciar Docker
+sudo systemctl restart docker
+
+# Probar GPU
+docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi
+```
 
 ### Error de Memoria
 Si recibes errores de memoria:
