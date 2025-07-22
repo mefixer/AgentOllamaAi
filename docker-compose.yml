@@ -1,0 +1,71 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-dev-ai
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    profiles:
+      - gpu
+    
+  # Versión sin GPU para sistemas sin NVIDIA
+  ollama-cpu:
+    image: ollama/ollama:latest
+    container_name: ollama-dev-ai-cpu
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    profiles:
+      - cpu
+
+  # Interfaz web opcional para gestionar modelos
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    volumes:
+      - open_webui_data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://ollama-dev-ai-cpu:11434
+      - WEBUI_SECRET_KEY=your-secret-key-here
+    depends_on:
+      - ollama-cpu
+    restart: unless-stopped
+    profiles:
+      - cpu
+      
+  open-webui-gpu:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui-gpu
+    ports:
+      - "3000:8080"
+    volumes:
+      - open_webui_data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://ollama-dev-ai:11434
+      - WEBUI_SECRET_KEY=your-secret-key-here
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    profiles:
+      - gpu
+
+volumes:
+  ollama_data:
+  open_webui_data:

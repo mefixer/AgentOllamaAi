@@ -1,0 +1,68 @@
+{
+  "models": [
+    {
+      "title": "Qwen 2.5 Coder 7B",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:7b",
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "Qwen 2.5 Coder 32B",
+      "provider": "ollama", 
+      "model": "qwen2.5-coder:32b",
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "CodeLlama 34B",
+      "provider": "ollama",
+      "model": "codellama:34b", 
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "DeepSeek Coder 33B",
+      "provider": "ollama",
+      "model": "deepseek-coder:33b",
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "Llama 3.1 8B",
+      "provider": "ollama",
+      "model": "llama3.1:8b",
+      "apiBase": "http://localhost:11434"
+    }
+  ],
+  "customCommands": [
+    {
+      "name": "explain",
+      "prompt": "Explica este código en español de forma clara y detallada: {{{ input }}}"
+    },
+    {
+      "name": "optimize",
+      "prompt": "Optimiza este código para mejor rendimiento y legibilidad: {{{ input }}}"
+    },
+    {
+      "name": "fix",
+      "prompt": "Encuentra y corrige los errores en este código: {{{ input }}}"
+    },
+    {
+      "name": "test",
+      "prompt": "Genera tests unitarios para este código: {{{ input }}}"
+    },
+    {
+      "name": "document", 
+      "prompt": "Genera documentación completa para este código incluyendo JSDoc/docstrings: {{{ input }}}"
+    },
+    {
+      "name": "refactor",
+      "prompt": "Refactoriza este código siguiendo las mejores prácticas: {{{ input }}}"
+    }
+  ],
+  "contextLength": 8192,
+  "completionOptions": {
+    "temperature": 0.2,
+    "topP": 0.9,
+    "presencePenalty": 0.0,
+    "frequencyPenalty": 0.0
+  },
+  "allowAnonymousTelemetry": false
+}

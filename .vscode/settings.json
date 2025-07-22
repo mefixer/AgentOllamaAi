@@ -1,0 +1,9 @@
+{
+  "continue.enableTabAutocomplete": true,
+  "continue.manuallyTriggerCompletion": false,
+  "continue.telemetryEnabled": false,
+  "files.watcherExclude": {
+    "**/ollama_data/**": true,
+    "**/open_webui_data/**": true
+  }
+}
