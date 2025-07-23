@@ -16,6 +16,7 @@ show_help() {
     echo "  recommended       Descarga solo los modelos recomendados"
     echo "  lightweight       Descarga solo modelos ligeros (< 10GB)"
     echo "  full             Descarga todos los modelos disponibles"
+    echo "  update-continue   Actualiza configuración de Continue con modelos actuales"
     echo ""
     echo "Ejemplos:"
     echo "  $0 chat qwen2.5-coder:7b"
@@ -28,6 +29,8 @@ detect_container() {
         echo "ollama-dev-ai-gpu"
     elif docker ps | grep -q "ollama-dev-ai-cpu"; then
         echo "ollama-dev-ai-cpu"
+    elif docker ps | grep -q "ollama-dev-ai"; then
+        echo "ollama-dev-ai"
     else
         echo "error"
     fi
@@ -145,6 +148,18 @@ case "$1" in
         echo "✅ Todos los modelos instalados"
         ;;
     
+    "update-continue")
+        echo "🔄 Actualizando configuración de Continue..."
+        if [ -f "update-continue-config.sh" ]; then
+            ./update-continue-config.sh
+            cp continue-config.json ~/.continue/config.json
+            echo "✅ Configuración de Continue actualizada"
+            echo "💡 Reinicia VS Code para aplicar los cambios"
+        else
+            echo "❌ No se encontró el script update-continue-config.sh"
+        fi
+        ;;
+
     "help"|"-h"|"--help"|"")
         show_help
         ;;

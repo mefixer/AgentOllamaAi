@@ -1,3 +1,22 @@
+#!/bin/bash
+
+# Script para actualizar la configuración de Continue con todos los modelos disponibles
+
+echo "🔄 Actualizando configuración de Continue..."
+
+# Detectar contenedor de Ollama
+CONTAINER=$(docker ps --format "table {{.Names}}" | grep "ollama" | head -n 1)
+
+if [ -z "$CONTAINER" ]; then
+    echo "❌ No se encontró contenedor de Ollama ejecutándose"
+    exit 1
+fi
+
+echo "📋 Obteniendo lista de modelos instalados..."
+MODELS=$(docker exec $CONTAINER ollama list | grep -v "NAME" | awk '{print $1}' | grep -v "^$")
+
+# Crear configuración dinámica de Continue
+cat > continue-config.json << EOF
 {
   "models": [
     {
@@ -66,3 +85,13 @@
   },
   "allowAnonymousTelemetry": false
 }
+EOF
+
+echo "✅ Configuración de Continue actualizada con todos los modelos disponibles:"
+echo "$MODELS"
+echo ""
+echo "🔧 Para aplicar los cambios:"
+echo "  1. Reinicia VS Code o"
+echo "  2. Recarga la ventana de VS Code (Ctrl+Shift+P -> 'Developer: Reload Window')"
+echo ""
+echo "📍 Ubicación del archivo: $(pwd)/continue-config.json"
