@@ -44,12 +44,30 @@ Esta configuración te permite ejecutar una IA local potente para desarrollo usa
 
 ## 🔧 Configuración en VS Code
 
-### Opción 1: Continue (Recomendada)
+### Opción 1: Continue con Agentes (Recomendada) 🤖
 
 1. Instala la extensión **Continue** desde el marketplace
-2. Copia el archivo `continue-config.json` a `~/.continue/config.json`
+2. Ejecuta el script de configuración automática:
+```bash
+./setup-continue-agents.sh
+```
 3. Reinicia VS Code
-4. Usa `Ctrl+I` para chat inline o `Ctrl+Shift+P` > "Continue: Open"
+4. Abre Continue con `Ctrl+Shift+P` > "Continue: Open"
+5. **¡Ahora verás la sección de Agentes!** Incluye:
+   - **Asistente de Código**: Especialista en desarrollo y debugging
+   - **Revisor de Código**: Analiza errores y vulnerabilidades
+   - **Documentador**: Genera documentación técnica
+
+### Verificar Configuración de Agentes
+```bash
+./check-continue-status.sh
+```
+
+### Opción 2: Configuración Manual
+
+1. Copia el archivo `continue-config.json` a `~/.continue/config.json`
+2. Reinicia VS Code
+3. Usa `Ctrl+I` para chat inline o `Ctrl+Shift+P` > "Continue: Open"
 
 ### Opción 2: Otras extensiones compatibles
 
