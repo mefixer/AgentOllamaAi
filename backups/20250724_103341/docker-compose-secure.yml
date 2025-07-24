@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Ollama service
+  ollama-cpu:
+    image: ollama/ollama:latest
+    container_name: ollama-secure-ai
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - ai-secure
+
+  # Open WebUI
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui-secure
+    ports:
+      - "127.0.0.1:3001:8080"
+    volumes:
+      - open_webui_data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://ollama-secure-ai:11434
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY:-change-this-secret-key}
+      - WEBUI_JWT_SECRET_KEY=${WEBUI_JWT_SECRET_KEY:-change-this-jwt-secret}
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-false}  # Desactivar registro público
+    depends_on:
+      - ollama-cpu
+    restart: unless-stopped
+    networks:
+      - ai-secure
+
+  # Authelia para autenticación adicional
+  authelia:
+    image: authelia/authelia:latest
+    container_name: ai-authelia
+    ports:
+      - "127.0.0.1:9091:9091"
+    volumes:
+      - ./authelia:/config
+    environment:
+      - TZ=UTC
+    restart: unless-stopped
+    networks:
+      - ai-secure
+
+  # Nginx con autenticación
+  nginx-auth:
+    image: nginx:alpine
+    container_name: ai-nginx-auth
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx-auth.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - open-webui
+      - authelia
+    restart: unless-stopped
+    networks:
+      - ai-secure
+
+networks:
+  ai-secure:
+    driver: bridge
+
+volumes:
+  ollama_data:
+  open_webui_data:
