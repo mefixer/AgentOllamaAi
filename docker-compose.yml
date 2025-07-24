@@ -9,6 +9,8 @@ services:
     environment:
       - OLLAMA_HOST=0.0.0.0
     restart: unless-stopped
+    networks:
+      - ollama-network
     deploy:
       resources:
         reservations:
@@ -30,6 +32,8 @@ services:
     environment:
       - OLLAMA_HOST=0.0.0.0
     restart: unless-stopped
+    networks:
+      - ollama-network
     profiles:
       - cpu
 
@@ -38,7 +42,7 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
     ports:
-      - "3000:8080"
+      - "3001:8080"
     volumes:
       - open_webui_data:/app/backend/data
     environment:
@@ -47,6 +51,8 @@ services:
     depends_on:
       - ollama-cpu
     restart: unless-stopped
+    networks:
+      - ollama-network
     profiles:
       - cpu
       
@@ -54,7 +60,7 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui-gpu
     ports:
-      - "3000:8080"
+      - "3001:8080"
     volumes:
       - open_webui_data:/app/backend/data
     environment:
@@ -63,8 +69,14 @@ services:
     depends_on:
       - ollama
     restart: unless-stopped
+    networks:
+      - ollama-network
     profiles:
       - gpu
+
+networks:
+  ollama-network:
+    driver: bridge
 
 volumes:
   ollama_data:

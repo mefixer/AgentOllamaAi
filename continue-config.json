@@ -31,29 +31,6 @@
       "apiBase": "http://localhost:11434"
     }
   ],
-  "agents": [
-    {
-      "title": "Asistente de Código",
-      "provider": "ollama",
-      "model": "qwen2.5-coder:7b",
-      "apiBase": "http://localhost:11434",
-      "systemMessage": "Eres un asistente de programación experto. Ayuda con desarrollo de código, debugging, optimización y mejores prácticas."
-    },
-    {
-      "title": "Revisor de Código",
-      "provider": "ollama", 
-      "model": "deepseek-coder:6.7b",
-      "apiBase": "http://localhost:11434",
-      "systemMessage": "Eres un revisor de código especializado. Analiza el código en busca de errores, vulnerabilidades y mejoras."
-    },
-    {
-      "title": "Documentador",
-      "provider": "ollama",
-      "model": "llama3.1:8b",
-      "apiBase": "http://localhost:11434",
-      "systemMessage": "Eres un especialista en documentación técnica. Genera documentación clara y completa para código y proyectos."
-    }
-  ],
   "customCommands": [
     {
       "name": "explain",

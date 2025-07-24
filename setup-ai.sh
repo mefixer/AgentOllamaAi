@@ -4,6 +4,44 @@
 
 echo "🤖 Configurando IA local para desarrollo..."
 
+# Función para limpiar recursos previos
+cleanup_previous_setup() {
+    echo "🧹 Limpiando configuración anterior..."
+    
+    # Detener y eliminar contenedores relacionados con Ollama
+    echo "🛑 Deteniendo contenedores existentes..."
+    docker stop $(docker ps -q --filter "name=ollama") 2>/dev/null || true
+    docker stop $(docker ps -q --filter "name=open-webui") 2>/dev/null || true
+    
+    # Eliminar contenedores
+    echo "🗑️  Eliminando contenedores antiguos..."
+    docker rm $(docker ps -aq --filter "name=ollama") 2>/dev/null || true
+    docker rm $(docker ps -aq --filter "name=open-webui") 2>/dev/null || true
+    
+    # Eliminar redes personalizadas (pero mantener las predeterminadas)
+    echo "🌐 Limpiando redes no utilizadas..."
+    docker network prune -f 2>/dev/null || true
+    
+    # Limpiar volúmenes huérfanos
+    echo "💾 Limpiando volúmenes no utilizados..."
+    docker volume prune -f 2>/dev/null || true
+    
+    # Verificar que el puerto 11434 esté liberado
+    echo "🔍 Verificando liberación del puerto 11434..."
+    if netstat -tlnp 2>/dev/null | grep :11434 > /dev/null; then
+        echo "⚠️  El puerto 11434 aún está ocupado. Esperando 5 segundos..."
+        sleep 5
+        # Intentar matar procesos que usen el puerto (con precaución)
+        sudo pkill -f "docker-proxy.*11434" 2>/dev/null || true
+        sleep 2
+    fi
+    
+    echo "✅ Limpieza completada"
+}
+
+# Ejecutar limpieza antes de configurar
+cleanup_previous_setup
+
 # Detectar si el sistema tiene GPU NVIDIA
 if command -v nvidia-smi &> /dev/null; then
     echo "✅ GPU NVIDIA detectada"
@@ -52,7 +90,7 @@ echo "✅ ¡Configuración completada!"
 echo ""
 echo "🔗 URLs disponibles:"
 echo "   • Ollama API: http://localhost:11434"
-echo "   • Web UI: http://localhost:3000"
+echo "   • Web UI: http://localhost:3001"
 echo ""
 echo "📝 Modelos instalados:"
 echo "   • qwen2.5-coder:32b (recomendado para código complejo)"
