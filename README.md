@@ -1,104 +1,106 @@
 # IA Local para Desarrollo con Docker 🤖
 
-Esta confi### Opción 3: Instalación Limpia (Completa) ✨
-
-Si necesitas todos los modelos o quieres control manual:
-
-```bash
-./setup-ai-clean.sh
-```
-
-**Características:**
-- 🧹 Limpieza manual con confirmaciones
-- 📦 Opción de descargar modelos grandes
-- 🔧 Control total del proceso
-- ⏱️ Tiempo: 30-60 minutos
-
-### Opción 4: Instalación Estándar
-
-```bash
-./setup-ai.sh
-```
-
-### Opción 5: Solo Limpieza
-
-Si solo necesitas limpiar la configuración anterior:
-
-```bash
-./cleanup-ai.sh
-```rmite ejecutar una IA local potente para desarrollo usando Docker y los mejores modelos de código abierto disponibles.
+Esta configuración permite ejecutar una IA local potente para desarrollo usando Docker y los mejores modelos de código abierto disponibles.
 
 ## 🚀 Características
 
-- **Ollama** como servidor de IA local
+- **Ollama** como servidor de IA local (v0.9.6)
 - **Modelos de código abierto** más avanzados para programación
-- **Interfaz web** para gestión de modelos
-- **Configuración automática** con un solo comando
-- **Compatible con GPU y CPU**
-- **Integración perfecta con VS Code**
+- **Interfaz web** OpenWebUI para gestión intuitiva de modelos
+- **Configuración automática** con detección de GPU
+- **Compatible con GPU NVIDIA y CPU**
+- **Integración perfecta con VS Code** vía Continue
+- **Scripts automatizados** para instalación y mantenimiento
+
+## ✅ Estado del Proyecto (Verificado)
+
+Este proyecto ha sido **probado y verificado** el 31 de julio de 2025 con:
+
+- ✅ **Docker 28.3.2** + **Docker Compose v2.38.2**
+- ✅ **Fedora 42 Workstation** (Kernel 6.15.7)
+- ✅ **NVIDIA GeForce RTX 4060 Laptop GPU** (8GB VRAM)
+- ✅ **Ollama v0.9.6** ejecutándose correctamente
+- ✅ **OpenWebUI** funcionando en puerto 3001
+- ✅ **Modelos activos**: Qwen 2.5 Coder 7B + Llama 3.1 8B
+- ✅ **API de Ollama** respondiendo en puerto 11434
+- ✅ **Continue configurado** para VS Code
+
+### Rendimiento Verificado
+
+- **Tiempo de inicio**: ~3 segundos para cargar modelo en GPU
+- **Memoria GPU utilizada**: ~450MB para cache KV del modelo 7B
+- **Respuesta típica**: 4-7 segundos para consultas de código
+
 
 ## 📋 Requisitos Previos
 
-- Docker y Docker Compose instalados
-- Al menos 8GB de RAM (16GB recomendado)
-- 50GB de espacio libre en disco
-- (Opcional) GPU NVIDIA con drivers instalados para mejor rendimiento
-- **Para GPU NVIDIA**: NVIDIA Container Toolkit instalado
+### Requisitos Mínimos del Sistema
+
+- **Docker**: versión 20.10+ (probado con 28.3.2)
+- **Docker Compose**: v2.0+ (probado con v2.38.2)
+- **RAM**: Mínimo 8GB (16GB recomendado para múltiples modelos)
+- **Espacio en disco**: 50GB libres (para modelos y cache)
+- **Sistema operativo**: Linux (probado en Fedora 42), macOS, Windows con WSL2
+
+### Para GPU NVIDIA (Opcional pero Recomendado)
+
+- **GPU**: NVIDIA con al menos 6GB VRAM (probado con RTX 4060 Laptop - 8GB)
+- **Drivers**: NVIDIA drivers actualizados
+- **NVIDIA Container Toolkit**: Para acelerar la inferencia
+
+### Instalación del NVIDIA Container Toolkit (Fedora)
+
+```bash
+# Agregar repositorio
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+
+# Instalar toolkit
+sudo dnf install -y nvidia-container-toolkit
+
+# Configurar Docker
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+# Verificar instalación
+docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi
+```
 
 ## 🛠️ Instalación Rápida
 
-### Opción 1: Configuración Simple (Recomendada) ⚡
+### Opción 1: Configuración Automática (Recomendada) ⚡
 
-Para una configuración rápida sin conflictos de puertos:
+Para una configuración automática con detección inteligente de GPU:
 
 ```bash
-./simple-setup.sh
+./auto-setup.sh
 ```
 
 **Características:**
-- ✅ Puerto 3001 (evita conflictos con el 3000)
+- ✅ Detección automática de GPU NVIDIA
 - ✅ Limpieza automática de puertos ocupados
-- ✅ Solo modelos esenciales (15-20 minutos)
-- ✅ Detección inteligente de GPU
-- ✅ Configuración directa de Continue
+- ✅ Descarga de modelos esenciales
+- ✅ Configuración de Continue para VS Code
+- ⏱️ Tiempo: 15-30 minutos
 
-### Opción 2: Configuración Automática (Más Rápida) ⚡
+### Opción 2: Instalación Manual
 
-Para una configuración completamente automática sin interrupciones:
-
-```bash
-./quick-setup.sh
-```
-
-**Características:**
-- ✅ Limpieza automática sin confirmaciones
-- ✅ Descarga solo modelos esenciales (más rápido)
-- ✅ Configuración completa en ~20-30 minutos
-- ✅ No requiere interacción del usuario
-
-### Opción 2: Instalación Limpia (Completa) ✨
-
-Si necesitas todos los modelos o quieres control manual:
+Para usuarios que prefieren control total del proceso:
 
 ```bash
-./setup-ai-clean.sh
+# 1. Levantar con GPU (si tienes NVIDIA)
+docker compose --profile gpu up -d
+
+# 2. O levantar con CPU solamente
+docker compose --profile cpu up -d
+
+# 3. Instalar modelos esenciales
+docker exec ollama-dev-ai ollama pull qwen2.5-coder:7b
+docker exec ollama-dev-ai ollama pull llama3.1:8b
 ```
 
-**Características:**
-- 🧹 Limpieza manual con confirmaciones
-- � Opción de descargar modelos grandes
-- 🔧 Control total del proceso
-- ⏱️ Tiempo: 30-60 minutos
+### Opción 3: Solo Limpieza
 
-### Opción 3: Instalación Estándar
-
-```bash
-./setup-ai.sh
-```
-
-### Opción 4: Solo Limpieza
-
-Si solo necesitas limpiar la configuración anterior:
+Si necesitas limpiar la configuración anterior:
 
 ```bash
 ./cleanup-ai.sh
@@ -106,17 +108,21 @@ Si solo necesitas limpiar la configuración anterior:
 
 ## 🧠 Modelos Incluidos
 
-### Modelos Especializados en Código
+### Modelos Verificados y Funcionando
 
-- **Qwen 2.5 Coder 32B**: El más avanzado para tareas complejas de código
-- **Qwen 2.5 Coder 7B**: Rápido y eficiente para código simple
-- **CodeLlama 34B**: Especialista en múltiples lenguajes de programación
-- **DeepSeek Coder 33B**: Excelente para análisis y generación de código
-- **Granite Code 34B**: Modelo de IBM optimizado para desarrollo
+Estos modelos han sido probados y están funcionando correctamente en el sistema:
 
-### Modelo de Uso General
+- **Qwen 2.5 Coder 7B**: Especializado en código, rápido y eficiente (4.68 GB)
+- **Llama 3.1 8B**: Modelo de uso general para explicaciones y consultas (4.92 GB)
 
-- **Llama 3.1 8B**: Rápido para consultas generales y explicaciones
+### Modelos Adicionales Disponibles
+
+Puedes instalar estos modelos según tus necesidades:
+
+- **Qwen 2.5 Coder 32B**: El más avanzado para tareas complejas de código (~20 GB)
+- **CodeLlama 7B**: Especialista en múltiples lenguajes de programación
+- **DeepSeek Coder 6.7B**: Excelente para análisis y generación de código
+- **Llama 3.2 1B**: Modelo ligero para respuestas rápidas
 
 ## 🔧 Configuración en VS Code
 
@@ -234,68 +240,109 @@ docker exec ollama-dev-ai-cpu ollama pull nuevo-modelo:tag
 
 ## 🐛 Solución de Problemas
 
+### Verificación Rápida del Sistema
+
+Usa el script de verificación incluido:
+
+```bash
+./check-continue-status.sh
+```
+
+Este script verifica automáticamente:
+- Estado de contenedores Docker
+- Conectividad con Ollama API
+- Configuración de Continue
+- Modelos disponibles
+
 ### Puerto 11434 u otros puertos ocupados
 
-Si recibes errores de puertos ocupados (11434, 3001):
+Si recibes errores de puertos ocupados:
 
 ```bash
-# Opción 1: Usar el script de limpieza automática
+# Opción 1: Usar script de limpieza (recomendado)
 ./cleanup-ai.sh
 
-# Opción 2: Liberar puertos manualmente
+# Opción 2: Verificar manualmente qué usa los puertos
 sudo netstat -tlnp | grep -E "(11434|3001)"
-sudo pkill -f "docker-proxy.*(11434|3001)"
 
-# Opción 3: Reiniciar Docker
-sudo systemctl restart docker
+# Opción 3: Forzar liberación de puertos
+sudo pkill -f "docker-proxy.*(11434|3001)"
 ```
 
-### Configuración de GPU NVIDIA en Fedora
+### Problemas con GPU NVIDIA
 
-Si tienes problemas con GPU en Fedora:
+Si el sistema no detecta tu GPU:
 
 ```bash
-# Instalar NVIDIA Container Toolkit
-curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+# Verificar que la GPU es visible
+nvidia-smi
 
-# Remover conflictos (si existen)
-sudo dnf remove golang-github-nvidia-container-toolkit -y
-
-# Instalar el toolkit
-sudo dnf install -y nvidia-container-toolkit
-
-# Configurar Docker
-sudo nvidia-ctk runtime configure --runtime=docker
-
-# Reiniciar Docker
-sudo systemctl restart docker
-
-# Probar GPU
+# Verificar Docker + NVIDIA
 docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi
+
+# Si falla, reinstalar NVIDIA Container Toolkit
+sudo dnf install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
 ```
 
-### Error de Memoria
-Si recibes errores de memoria:
-1. Reduce el número de modelos cargados
-2. Usa modelos más pequeños (7B en lugar de 32B)
-3. Aumenta la memoria virtual (swap)
+### Error "No such profile: gpu"
 
-### Modelos No Responden
-1. Verifica que el contenedor esté corriendo: `docker ps`
-2. Revisa los logs: `docker-compose logs ollama`
-3. Reinicia el servicio: `docker-compose restart`
+Si recibes este error, usa el perfil CPU:
 
-### VS Code No Conecta
-1. Verifica que Ollama esté en http://localhost:11434
-2. Comprueba la configuración de Continue
-3. Reinicia la extensión
+```bash
+docker compose --profile cpu up -d
+```
+
+### Modelos No Cargan o Son Lentos
+
+1. **Verificar memoria disponible**:
+   ```bash
+   free -h
+   # GPU memory
+   nvidia-smi
+   ```
+
+2. **Usar modelos más pequeños**:
+   ```bash
+   # En lugar de modelos 32B, usa 7B
+   docker exec ollama-dev-ai ollama pull qwen2.5-coder:7b
+   ```
+
+3. **Verificar logs de Ollama**:
+   ```bash
+   docker compose logs --tail=20 ollama
+   ```
 
 ## 📈 Próximos Pasos
 
-1. **Explora la interfaz web** en http://localhost:3001
-2. **Personaliza los prompts** según tus necesidades
-3. **Prueba diferentes modelos** para distintas tareas
-4. **Configura atajos de teclado** personalizados en VS Code
+### Después de la Instalación
+
+1. **Accede a la interfaz web**: <http://localhost:3001>
+2. **Instala Continue en VS Code** desde el marketplace
+3. **Copia la configuración**: `cp continue-config.json ~/.continue/config.json`
+4. **Reinicia VS Code** y prueba `Ctrl+I` para chat inline
+
+### Personalización Avanzada
+
+1. **Instala modelos adicionales** según tus necesidades:
+   ```bash
+   # Para proyectos más complejos
+   docker exec ollama-dev-ai ollama pull qwen2.5-coder:32b
+   
+   # Para desarrollo web
+   docker exec ollama-dev-ai ollama pull codellama:7b
+   ```
+
+2. **Configura comandos personalizados** editando `continue-config.json`
+3. **Ajusta la temperatura** del modelo para creatividad vs precisión
+4. **Configura atajos de teclado** en VS Code para acceso rápido
+
+### Monitoreo y Optimización
+
+- **Monitorea el uso de memoria**: `docker stats`
+- **Revisa logs periódicamente**: `docker compose logs --tail=50`
+- **Actualiza modelos**: Los nuevos modelos se lanzan frecuentemente
 
 ## 🤝 Contribuir
 
@@ -303,4 +350,7 @@ Si recibes errores de memoria:
 
 ---
 
-**¡Disfruta de tu IA local para desarrollo! 🎉**
+### ¡Disfruta de tu IA local para desarrollo! 🎉
+
+> Proyecto verificado y funcionando el 31 de julio de 2025
+> Sistema probado: Fedora 42 + Docker 28.3.2 + RTX 4060 Laptop GPU
